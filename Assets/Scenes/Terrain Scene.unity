@@ -4873,9 +4873,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isDragging: 0
-  target: {fileID: 1865481701}
+  target: {fileID: 1219626321}
+  player: {fileID: 1865481701}
   rotationSensitivity: 0.3
   smoothTime: 0.01
+  PointerId: 0
+  xMinRotation: -35
+  xMaxRotation: 35
 --- !u!4 &468012620 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 442488, guid: ec78ebca7517fb745a45a931cb06d2bd,

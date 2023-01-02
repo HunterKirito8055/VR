@@ -7,12 +7,15 @@ public class TouchPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private bool isDragging = false;
     [SerializeField] private GameObject target;
+    [SerializeField] private GameObject player;
 
     [SerializeField] private float rotationSensitivity = 5f;
     [SerializeField] private float smoothTime = 0.12f;
     private float Yaxis;
     private float Xaxis;
-    private int PointerId;
+    public int PointerId;
+    public int xMinRotation;
+    public int xMaxRotation;
 
     private Vector2 TouchDist;
     private Vector2 PointerOld;
@@ -33,7 +36,7 @@ public class TouchPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private void Awake()
     {
         Yaxis = target.transform.eulerAngles.y;
-     //   Xaxis = target.transform.eulerAngles.y;
+        Xaxis = target.transform.eulerAngles.x;
     }
     private void Update()
     {
@@ -56,11 +59,13 @@ public class TouchPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
 
         Yaxis += TouchDist.x * rotationSensitivity;
-        // Xaxis -= TouchDist.y * rotationSensitivity;
+        Xaxis -= TouchDist.y * rotationSensitivity;
+        Xaxis = Mathf.Clamp(Xaxis, xMinRotation, xMaxRotation);
+        targetRotation = Vector3.SmoothDamp(targetRotation, new Vector3(Xaxis, Yaxis), ref currentVel, smoothTime);
 
-        targetRotation = Vector3.SmoothDamp(targetRotation, new Vector3(0, Yaxis), ref currentVel, smoothTime);
-        target.transform.eulerAngles = targetRotation;
+        target.transform.localRotation = Quaternion.Euler(targetRotation.x, 0, 0);
+        player.transform.localRotation = Quaternion.Euler(0, targetRotation.y, 0);
     }
 
-
+  
 }
