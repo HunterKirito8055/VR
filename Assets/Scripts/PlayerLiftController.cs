@@ -21,7 +21,6 @@ public class PlayerLiftController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-
             Ray ray = !isVRMode ? cam.ScreenPointToRay(Input.mousePosition) : cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             if (Physics.Raycast(ray, out RaycastHit hit, 20f, liftButtonLayer))
             {

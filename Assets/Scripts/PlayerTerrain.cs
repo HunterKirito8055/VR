@@ -14,8 +14,11 @@ public class PlayerTerrain : MonoBehaviour
     }
     private void Update()
     {
-       move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-      // move = new Vector3(joystick.input.x, 0, joystick.input.y);
+#if !UNITY_EDITOR
+        move = new Vector3(joystick.input.x, 0, joystick.input.y);
+#else
+        move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+#endif
         move = transform.TransformDirection(move);
         move *= speed * Time.deltaTime;
         move.y -= gravity * Time.deltaTime;

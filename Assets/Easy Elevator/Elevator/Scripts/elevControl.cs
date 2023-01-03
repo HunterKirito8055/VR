@@ -1,7 +1,7 @@
-﻿using UnityEngine;
-using System.Linq;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 public class elevControl : MonoBehaviour
 {
@@ -9,13 +9,14 @@ public class elevControl : MonoBehaviour
     public PlayerLiftController playerVRLiftController;
     public Material buttonOnMat, buttonOffMat, buttonSelectorMat;
     public Material ledMat;
+    public Material ledTempMat;
     public Transform ledPanel;
     public float ledMatSwitchDelay = .5f;
     private Material[] ledMatsArray;
 
     private List<Transform> buttonLightList;
     private List<GameObject> hallFramesList;
-    private List<Texture> texturesList;
+    public List<Texture> texturesList;
     private AnimationClip openAnim, closeAnim;
 
     public Transform btnLightGroup;
@@ -49,6 +50,7 @@ public class elevControl : MonoBehaviour
     {
         //TRANSFORM REFERENCE
         elevator = this.transform;
+        currentMovingFloor = curFloorLevel;
 
         //BUTTON LIGHTS OBJECT LIST, POPULATE LIGHTS OBJECT LIST, SORT LIGHTS OBJECT LIST
         buttonLightList = new List<Transform>();
@@ -58,7 +60,6 @@ public class elevControl : MonoBehaviour
         }
         buttonLightList = buttonLightList.OrderBy(Transform => Transform.name).ToList();
 
-
         //HALL FRAMES OBJECT LIST, POPULATE FRAMES OBJECT LIST, SORT FRAMES OBJECT LIST
         hallFramesList = new List<GameObject>();
         foreach (GameObject hallFrame in GameObject.FindGameObjectsWithTag(hallFrameTag))
@@ -67,12 +68,13 @@ public class elevControl : MonoBehaviour
         }
         hallFramesList = hallFramesList.OrderBy(GameObject => GameObject.GetComponent<elevHallFrameController>().floor).ToList();
 
-        //		//LED PANEL TEXTURES LIST, POPULATE TEXTURES LIST, SORT THE LIST
-        //		texturesList = new List<Texture>();
-        //		foreach ( Texture tex in Resources.LoadAll( "LEDPanelTextures" ) ){ 
-        //			texturesList.Add( tex );
-        //		}
-        //		texturesList = texturesList.OrderBy( Texture=>Texture.name ).ToList();
+        //LED PANEL TEXTURES LIST, POPULATE TEXTURES LIST, SORT THE LIST
+        texturesList = new List<Texture>();
+        foreach (Texture tex in Resources.LoadAll("LEDPanelTextures"))
+        {
+            texturesList.Add(tex);
+        }
+        texturesList = texturesList.OrderBy(Texture => Texture.name).ToList();
 
         //LED PANEL TEXTURES LIST, POPULATE TEXTURES LIST, SORT THE LIST
         texturesList = new List<Texture>();
@@ -82,15 +84,17 @@ public class elevControl : MonoBehaviour
         }
         texturesList = texturesList.OrderBy(Texture => Texture.name).ToList();
 
-
         //SET ANIMATION CLIPS
         openAnim = transform.GetComponent<Animation>().GetClip("OpenDoorsV2");
         closeAnim = transform.GetComponent<Animation>().GetClip("CloseDoorsV2");
 
+        //Instantiate Material
+        ledTempMat = Instantiate(ledMat);
+
         //ASSIGN LED MATERIALS TO ELEVATOR AND HALL FRAMES, THEN SET LED FLOOR DISPLAY & ELEVATOR TO CURRENT FLOOR
         ledMatsArray = new Material[2];
-        ledMatsArray[0] = ledPanel.GetComponent<Renderer>().material;
-        ledMatsArray[1] = ledMat;
+        ledMatsArray[0] = ledTempMat;//ledPanel.GetComponent<Renderer>().material;
+        ledMatsArray[1] = ledTempMat;
         ledPanel.GetComponent<Renderer>().materials = ledMatsArray;
         foreach (var hallFrame in hallFramesList)
         {
@@ -276,7 +280,7 @@ public class elevControl : MonoBehaviour
     {
         //SWITCH TO BLANK LED TEXTRES
         //		ledMat.SetTexture( "_MainTex", texturesList[ texturesList.Count-2 ] );
-        ledMat.SetTexture("_EmissionMap", texturesList[texturesList.Count - 1]);
+        //   ledMat.SetTexture("_EmissionMap", texturesList[texturesList.Count - 1]);
         yield return new WaitForSeconds(ledMatSwitchDelay);
 
         //CONVERT FLOOR NUMBER TO LIST INDEXES
@@ -286,7 +290,7 @@ public class elevControl : MonoBehaviour
 
         //CHANGE LED MATERIAL TEXTURES
         //		ledMat.SetTexture( "_MainTex", texturesList[diff] );
-        ledMat.SetTexture("_EmissionMap", texturesList[illume]);
+        ledTempMat.SetTexture("_EmissionMap", texturesList[3]);
 
         //TURN BUTTON LIGHT OFF
         ButtonFloorLight(newFloorNum, false);
@@ -304,11 +308,12 @@ public class elevControl : MonoBehaviour
         //UP OR DOWN
         int floorIncrement = (newFloorNum < curFloorLevel) ? -1 : 1;
 
+        curFloorLevel = newFloorNum;
         while (curFloorLevel != newFloorNum)
         {
             //SWITCH TO BLANK LED TEXTRES
             //			ledMat.SetTexture( "_MainTex", texturesList[ texturesList.Count-2 ] );
-            ledMat.SetTexture("_EmissionMap", texturesList[texturesList.Count - 1]);
+            //  ledMat.SetTexture("_EmissionMap", texturesList[texturesList.Count - 1]);
             yield return new WaitForSeconds(ledMatSwitchDelay);
 
             //CONVERT FLOOR NUMBER TO LIST INDEXES
@@ -320,7 +325,7 @@ public class elevControl : MonoBehaviour
 
             //CHANGE LED MATERIAL TEXTURES
             //			ledMat.SetTexture( "_MainTex", texturesList[diff] );
-            ledMat.SetTexture("_EmissionMap", texturesList[illume]);
+            ledTempMat.SetTexture("_EmissionMap", texturesList[illume]);
             yield return new WaitForSeconds(floorTime - ledMatSwitchDelay);
 
             curFloorLevel += floorIncrement;
@@ -448,8 +453,10 @@ public class elevControl : MonoBehaviour
         newFloor = curFloorLevel;
     }
 
+
     void Update()
     {
+
         //USE THE HALL FRAME CALL BUTTON > TRIGGERED FROM callBtnTrigger.cs
         if (useCallBtn)
         {
@@ -481,11 +488,21 @@ public class elevControl : MonoBehaviour
         }
     }
 
+    public int currentMovingFloor;
     public void SetElevatorFloor(int _floor)
     {
         if (!isElevMoving)
         {
             hallFramesList[floorCheck(_floor)].GetComponent<elevHallFrameController>().CallElevator();
+        }
+    }
+    private void FixedUpdate()
+    {
+        int _currentFloorIndex = hallFramesList.FindIndex(x => x.transform.position.y == Mathf.RoundToInt(elevator.position.y));
+        if (currentMovingFloor != _currentFloorIndex && _currentFloorIndex != -1)
+        {
+            currentMovingFloor = _currentFloorIndex;
+            ledTempMat.SetTexture("_EmissionMap", texturesList[currentMovingFloor]);
         }
     }
 }
