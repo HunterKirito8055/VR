@@ -10,12 +10,28 @@ public class PlayerLiftController : MonoBehaviour
     public elevControl elevcontrol;
     public LayerMask liftButtonLayer;
     public LayerMask vrFloorLayer;
+    public LayerMask reticlePointLayers;
     public Transform elevatorParent;
     public Transform defaultParent;
     public Transform thisTransform;
     public bool isLiftEnter;
     public bool isLiftStarted;
     public bool isVRMode;
+
+    public Material centerDotMaterial;
+    public MeshRenderer reticlePointerMeshRenderer;
+    public Color hitLayerColor;
+    public Color defaultLayerColor;
+
+    private void Start()
+    {
+        if (isVRMode)
+        {
+            centerDotMaterial = reticlePointerMeshRenderer.material;
+            centerDotMaterial.color = defaultLayerColor;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -46,10 +62,10 @@ public class PlayerLiftController : MonoBehaviour
                         }
                         transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
                     }
-
                 }
             }
         }
+        RaycastLiftSceneLayers();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -76,16 +92,39 @@ public class PlayerLiftController : MonoBehaviour
 
     public void LiftDoorOpened()
     {
-        //if (!isVRMode)
-        //{
-        //    return;
-        //}
         isLiftStarted = false;
         if (isLiftEnter)
         {
             characterController.enabled = true;
         }
     }
+    public void RaycastLiftSceneLayers()
+    {
+        if (!isVRMode)
+        {
+            return;
+        }
+        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        if (Physics.Raycast(ray, out RaycastHit hit, 20f, reticlePointLayers))
+        {
+            if (isLiftEnter && hit.collider.gameObject.layer == LayerMask.NameToLayer("ElevatorButton"))
+            {
+                centerDotMaterial.color = defaultLayerColor;
+            }
+            else
+            {
+                centerDotMaterial.color = hitLayerColor;
+            }
+        }
+        else
+        {
+            centerDotMaterial.color = defaultLayerColor;
+        }
+    }
+
+
+
+
     //public void FloorTeleport()
     //{
     //    if (isLiftEnter && isLiftStarted)
