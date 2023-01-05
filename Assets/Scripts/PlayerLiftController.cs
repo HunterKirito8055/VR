@@ -122,22 +122,4 @@ public class PlayerLiftController : MonoBehaviour
         }
     }
 
-
-
-
-    //public void FloorTeleport()
-    //{
-    //    if (isLiftEnter && isLiftStarted)
-    //    {
-    //        return;
-    //    }
-    //    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-    //    if (Physics.Raycast(ray, out RaycastHit hit, 20f, vrFloorLayer))
-    //    {
-    //        if (hit.collider != null)
-    //        {
-    //            transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-    //        }
-    //    }
-    //}
 }

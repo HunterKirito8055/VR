@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Lift Scene.unity
     guid: d946c6423a78ba4428246cc78a3d089f
+  - enabled: 1
+    path: Assets/Scenes/Classroom Scene.unity
+    guid: 5dae27683cc09db4980cc0509fa388b1
   m_configObjects: {}

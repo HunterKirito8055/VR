@@ -9,6 +9,10 @@ TagManager:
   - elev01hallFrame
   - elev02hallFrame
   - Elevator
+  - pickuppoint
+  - sittingpoint
+  - waypoint
+  - stealingpoint
   layers:
   - Default
   - TransparentFX
@@ -21,7 +25,7 @@ TagManager:
   - CallLift
   - ElevatorButton
   - VRFloor
-  - 
+  - ClassroomDesk
   - 
   - 
   - 

@@ -14,6 +14,11 @@ public class PlayerTerrain : MonoBehaviour
     }
     private void Update()
     {
+        if(!characterController.enabled)
+        {
+            return;
+        }
+
 #if !UNITY_EDITOR
         move = new Vector3(joystick.input.x, 0, joystick.input.y);
 #else
