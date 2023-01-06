@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerLiftController : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class PlayerLiftController : MonoBehaviour
     public LayerMask liftButtonLayer;
     public LayerMask vrFloorLayer;
     public LayerMask reticlePointLayers;
+    public LayerMask uiLayer;
     public Transform elevatorParent;
     public Transform defaultParent;
     public Transform thisTransform;
@@ -64,6 +66,7 @@ public class PlayerLiftController : MonoBehaviour
                     }
                 }
             }
+            PlayerNormalMode();
         }
         RaycastLiftSceneLayers();
     }
@@ -121,5 +124,33 @@ public class PlayerLiftController : MonoBehaviour
             centerDotMaterial.color = defaultLayerColor;
         }
     }
-
+    public void PlayerNormalMode()
+    {
+        if (isVRMode)
+        {
+            return;
+        }
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, 20f, uiLayer))
+        {
+            if (hit.collider.gameObject.GetComponent<Button>() != null)
+            {
+                hit.collider.gameObject.GetComponent<Button>().onClick.Invoke();
+            }
+        }
+    }
+    public void OnLiftSizePositionChange(Vector3 pos)
+    {
+        characterController.enabled = false;
+        transform.position = pos;
+        characterController.enabled = true;
+    }
+}
+[System.Serializable]
+public struct SizeDimensions
+{
+    public string lift;
+    public float elevatorForwardPosition;
+    public float elevatorScaleSize;
+    public float reflectionProbePos;
 }
