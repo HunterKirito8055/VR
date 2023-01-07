@@ -11,8 +11,8 @@ public class TouchPanel : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     [SerializeField] private float rotationSensitivity = 5f;
     [SerializeField] private float smoothTime = 0.12f;
-    private float Yaxis;
-    private float Xaxis;
+    public float Yaxis;
+    public float Xaxis;
     public int PointerId;
     public int xMinRotation;
     public int xMaxRotation;

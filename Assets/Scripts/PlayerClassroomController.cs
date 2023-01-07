@@ -7,6 +7,7 @@ public class PlayerClassroomController : MonoBehaviour
     public ClassroomDesk currentClassroomDesk;
     public CharacterController characterController;
     public GameObject standupButton;
+    public TouchPanel touchPanel;
     public LayerMask deskLayer;
     public Camera cam;
     public Material centerDotMaterial;
@@ -33,7 +34,6 @@ public class PlayerClassroomController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-
             Ray ray = !isVRMode ? cam.ScreenPointToRay(Input.mousePosition) : cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
             if (Physics.Raycast(ray, out RaycastHit hit, 30f, deskLayer))
             {
@@ -55,6 +55,7 @@ public class PlayerClassroomController : MonoBehaviour
                         transform.position = classRoomDesk.SetPlayerPosition();
                         transform.position = new Vector3(transform.position.x, (isVRMode ? transform.position.y : playerCameraUpOffset), transform.position.z);
                         currentClassroomDesk = classRoomDesk;
+                        SetCameraPositionOnDesk(classRoomDesk.board.position);
                     }
                 }
             }
@@ -86,6 +87,20 @@ public class PlayerClassroomController : MonoBehaviour
             currentClassroomDesk.ResetDesk();
             characterController.enabled = true;
             isCharacterSit = false;
+        }
+    }
+    public void SetCameraPositionOnDesk(Vector3 _board)
+    {
+        Vector3 diff = (_board - transform.position);
+        Quaternion lookAt = Quaternion.LookRotation(diff);
+        if (!isVRMode)
+        {
+            touchPanel.Xaxis = lookAt.eulerAngles.x - 360;
+            touchPanel.Yaxis = lookAt.eulerAngles.y;
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0, lookAt.eulerAngles.y - cam.transform.localEulerAngles.y, 0);
         }
     }
 }
