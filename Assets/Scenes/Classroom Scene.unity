@@ -412,7 +412,7 @@ MonoBehaviour:
   - {fileID: 1882704745501552759, guid: ade59cce99295bb448941e3dc2e4ea64, type: 3}
   - {fileID: 6708757642858877383, guid: 895f402b80c6d6b46a2751260f8ec03c, type: 3}
   - {fileID: 7025723798001617007, guid: 9a4aff4c494be91458d0dad5bf892d81, type: 3}
-  isHalfClassroomFill: 1
+  isHalfClassroomFill: 0
   noOfStudents: 0
 --- !u!1 &49927536
 GameObject:
@@ -10249,6 +10249,10 @@ MonoBehaviour:
   isCharacterSit: 0
   defaultLayerColor: {r: 1, g: 0.009313857, b: 0, a: 1}
   hitLayerColor: {r: 0.13412571, g: 1, b: 0, a: 1}
+  lastClickTime: 0
+  clickDelay: 0.26
+  touchCount: 0
+  canvasTransform: {fileID: 607131863}
 --- !u!1 &1370943944
 GameObject:
   m_ObjectHideFlags: 0
@@ -10554,6 +10558,10 @@ MonoBehaviour:
   isCharacterSit: 0
   defaultLayerColor: {r: 1, g: 0.009313857, b: 0, a: 1}
   hitLayerColor: {r: 0.13412571, g: 1, b: 0, a: 1}
+  lastClickTime: 0
+  clickDelay: 0.26
+  touchCount: 0
+  canvasTransform: {fileID: 1857882618}
 --- !u!143 &1488116158
 CharacterController:
   m_ObjectHideFlags: 0

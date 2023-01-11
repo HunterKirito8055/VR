@@ -2,10 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR;
 
 public class GameManager : MonoBehaviour
 {
+  
+
     public static GameManager Instance;
     [SerializeField] private bool vrMode; 
     public bool IsVRMode
