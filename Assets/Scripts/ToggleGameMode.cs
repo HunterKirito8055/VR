@@ -12,7 +12,7 @@ public class ToggleGameMode : MonoBehaviour
     }
     IEnumerator IEnableVRMode(bool _enable)
     {
-        GameManager.Instance.IsVRMode = _enable;
+       //GameManager.Instance.IsVRMode = _enable;
         yield return null;
 
 #if !UNITY_EDITOR

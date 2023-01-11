@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-  
-
     public static GameManager Instance;
     [SerializeField] private bool vrMode; 
     public bool IsVRMode
@@ -20,7 +18,6 @@ public class GameManager : MonoBehaviour
             vrMode = value;
         }
     }
-
     private void Awake()
     {
         if (Instance == null)

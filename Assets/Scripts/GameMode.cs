@@ -12,4 +12,6 @@ public class GameMode : MonoBehaviour
         vrMode.gameObject.SetActive(GameManager.Instance.IsVRMode);
         normalMode.gameObject.SetActive(!GameManager.Instance.IsVRMode);
     }
+   
+
 }
