@@ -8,38 +8,25 @@ public class PlayerLiftController : MonoBehaviour
 {
     public Camera cam;
     public CharacterController characterController;
-    public elevControl elevcontrol;
     public LayerMask liftButtonLayer;
-    public LayerMask vrFloorLayer;
-    public LayerMask reticlePointLayers;
     public LayerMask uiLayer;
     public Transform elevatorParent;
     public Transform defaultParent;
     public Transform thisTransform;
     public bool isLiftEnter;
     public bool isLiftStarted;
-    public bool isVRMode;
 
     public Material centerDotMaterial;
     public MeshRenderer reticlePointerMeshRenderer;
     public Color hitLayerColor;
     public Color defaultLayerColor;
 
-    private void Start()
-    {
-        if (isVRMode)
-        {
-            centerDotMaterial = reticlePointerMeshRenderer.material;
-            centerDotMaterial.color = defaultLayerColor;
-        }
-    }
-
     // Update is called once per frame
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = !isVRMode ? cam.ScreenPointToRay(Input.mousePosition) : cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+            Ray ray =  cam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out RaycastHit hit, 20f, liftButtonLayer))
             {
                 if (hit.collider != null)
@@ -56,21 +43,13 @@ public class PlayerLiftController : MonoBehaviour
                     {
                         callElevatorButton.CallElevator();
                     }
-                    else if (hit.collider.gameObject.layer == LayerMask.NameToLayer("VRFloor"))
-                    {
-                        if (isLiftEnter && isLiftStarted)
-                        {
-                            return;
-                        }
-                        transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-                    }
                 }
             }
-            PlayerNormalMode();
+            LiftScaleButtonsInteraction();
         }
-        RaycastLiftSceneLayers();
     }
 
+    #region OnTriggerMethods
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Elevator")
@@ -87,12 +66,13 @@ public class PlayerLiftController : MonoBehaviour
             thisTransform.parent = defaultParent;
         }
     }
+    #endregion
+
     public void StartLift()
     {
         characterController.enabled = false;
         isLiftStarted = true;
     }
-
     public void LiftDoorOpened()
     {
         isLiftStarted = false;
@@ -101,35 +81,8 @@ public class PlayerLiftController : MonoBehaviour
             characterController.enabled = true;
         }
     }
-    public void RaycastLiftSceneLayers()
+    public void LiftScaleButtonsInteraction()
     {
-        if (!isVRMode)
-        {
-            return;
-        }
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (Physics.Raycast(ray, out RaycastHit hit, 20f, reticlePointLayers))
-        {
-            if (isLiftEnter && hit.collider.gameObject.layer == LayerMask.NameToLayer("ElevatorButton"))
-            {
-                centerDotMaterial.color = defaultLayerColor;
-            }
-            else
-            {
-                centerDotMaterial.color = hitLayerColor;
-            }
-        }
-        else
-        {
-            centerDotMaterial.color = defaultLayerColor;
-        }
-    }
-    public void PlayerNormalMode()
-    {
-        if (isVRMode)
-        {
-            return;
-        }
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, 20f, uiLayer))
         {

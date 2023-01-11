@@ -12,7 +12,7 @@ public class elevControl : MonoBehaviour
     public int currentLiftSizeIndex = 0;
 
     public PlayerLiftController playerLiftController;
-    public PlayerLiftController playerVRLiftController;
+    public PlayerVRLiftController playerVRLiftController;
     public Material buttonOnMat, buttonOffMat, buttonSelectorMat;
     public Material ledMat;
     public Material ledTempMat;
@@ -380,10 +380,17 @@ public class elevControl : MonoBehaviour
         transform.GetComponent<Animation>().Play();
         hallFramesList[floor].GetComponent<elevHallFrameController>().OpenDoor();
         doorOpen = true;
+    }
+
+    public void LiftDoorOpened()
+    {
         playerLiftController.LiftDoorOpened();
         playerVRLiftController.LiftDoorOpened();
     }
-
+    public void LiftDoorClosed()
+    {
+        playerVRLiftController.LiftDoorClosed();
+    }
     /// <summary>
     /// Closes the elevator door only.
     /// </summary>
