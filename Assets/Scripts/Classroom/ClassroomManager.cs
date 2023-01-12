@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ClassroomManager : MonoBehaviour
 {
@@ -14,15 +15,26 @@ public class ClassroomManager : MonoBehaviour
     public (int, int) halfClassRandomStrength;
     public (int, int) fullClassRandomStrength;
 
-    void Start()
+    public int[] classRoomData;
+    public ClassroomButtons[] classRoomButtons;
+    private void Start()
+    {
+        for (int i = 0; i < classRoomData.Length; i++)
+        {
+            classRoomButtons[i].Initialize(this, classRoomData[i]);
+        }
+    }
+    public void SetClassroomStrength(int _classroomStrength)
     {
 
-        halfClassRandomStrength = (classroomDesksList.Count / 2, (classroomDesksList.Count / 2) + 3);
-        fullClassRandomStrength = (classroomDesksList.Count - 3, classroomDesksList.Count - 5);
+        //halfClassRandomStrength = (classroomDesksList.Count / 2, (classroomDesksList.Count / 2) + 3);
+        //fullClassRandomStrength = (classroomDesksList.Count - 3, classroomDesksList.Count - 5);
 
-        noOfStudents = isHalfClassroomFill ? Random.Range(halfClassRandomStrength.Item1, halfClassRandomStrength.Item2) :
-         Random.Range(fullClassRandomStrength.Item1, fullClassRandomStrength.Item2);
+        //noOfStudents = isHalfClassroomFill ? Random.Range(halfClassRandomStrength.Item1, halfClassRandomStrength.Item2) :
+        // Random.Range(fullClassRandomStrength.Item1, fullClassRandomStrength.Item2);
 
+        noOfStudents = Mathf.CeilToInt((float)classroomDesksList.Count * (_classroomStrength / 100f));
+        Debug.Log(noOfStudents);
         ShuffleList(classroomDesksList);
 
         int studentsCount = 0;
@@ -31,7 +43,7 @@ public class ClassroomManager : MonoBehaviour
             if (noOfStudents > studentsCount)
             {
                 var student = Instantiate(studentsPrefabList[Random.Range(0, studentsPrefabList.Count)], transform);
-                classRoomDesk.Initialize(board,student.transform);
+                classRoomDesk.Initialize(board, student.transform);
                 studentsCount++;
             }
             else

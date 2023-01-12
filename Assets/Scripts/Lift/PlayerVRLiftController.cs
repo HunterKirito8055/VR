@@ -19,7 +19,10 @@ public class PlayerVRLiftController : MonoBehaviour
     public MeshRenderer reticlePointerMeshRenderer;
     public Color hitLayerColor;
     public Color defaultLayerColor;
-
+    public Image gazeImg;
+    public float gvrTimer;
+    public float totalTime = 2;
+    public bool isElevatorCall;
     private void Start()
     {
         centerDotMaterial = reticlePointerMeshRenderer.material;
@@ -92,10 +95,7 @@ public class PlayerVRLiftController : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            ResetGaze();
-        }
+       
     }
 
     #region OnTriggerMethods
@@ -154,10 +154,7 @@ public class PlayerVRLiftController : MonoBehaviour
         }
     }
 
-    public Image gazeImg;
-    public float gvrTimer;
-    public float totalTime = 2;
-    public bool isElevatorCall;
+    
     public void ResetGaze()
     {
         gazeImg.fillAmount = 0;

@@ -35,11 +35,14 @@ public class ClassroomDesk : MonoBehaviour
     {
         if (!isDeskFilled)
         {
-            isDeskFilled = true;
-            chair.localPosition = chairSittingPos;
             return true;
         }
         return false;
+    }
+    public void Sit()
+    {
+        isDeskFilled = true;
+        chair.localPosition = chairSittingPos;
     }
     public void ResetChair()
     {
