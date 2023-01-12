@@ -12,8 +12,6 @@ public class ClassroomManager : MonoBehaviour
     public bool isHalfClassroomFill;
 
     public int noOfStudents;
-    public (int, int) halfClassRandomStrength;
-    public (int, int) fullClassRandomStrength;
 
     public int[] classRoomData;
     public ClassroomButtons[] classRoomButtons;
@@ -26,15 +24,7 @@ public class ClassroomManager : MonoBehaviour
     }
     public void SetClassroomStrength(int _classroomStrength)
     {
-
-        //halfClassRandomStrength = (classroomDesksList.Count / 2, (classroomDesksList.Count / 2) + 3);
-        //fullClassRandomStrength = (classroomDesksList.Count - 3, classroomDesksList.Count - 5);
-
-        //noOfStudents = isHalfClassroomFill ? Random.Range(halfClassRandomStrength.Item1, halfClassRandomStrength.Item2) :
-        // Random.Range(fullClassRandomStrength.Item1, fullClassRandomStrength.Item2);
-
         noOfStudents = Mathf.CeilToInt((float)classroomDesksList.Count * (_classroomStrength / 100f));
-        Debug.Log(noOfStudents);
         ShuffleList(classroomDesksList);
 
         int studentsCount = 0;

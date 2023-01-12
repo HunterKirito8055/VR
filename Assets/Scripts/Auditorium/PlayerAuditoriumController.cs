@@ -10,28 +10,14 @@ public class PlayerAuditoriumController : MonoBehaviour
     public TouchPanel touchPanel;
     public LayerMask deskLayer;
     public Camera cam;
-    public Material centerDotMaterial;
-    public MeshRenderer reticlePointerMeshRenderer;
-    public bool isVRMode;
     public bool isCharacterSit;
-    public Color defaultLayerColor;
-    public Color hitLayerColor;
-    private Vector3 playerCameraUpOffset = new Vector3(0, 0f, 0);
+    private Vector3 playerCameraUpOffset = new Vector3(0, -0.72f, 0);
     public Transform canvasTransform;
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        if (isVRMode)
-        {
-            centerDotMaterial = reticlePointerMeshRenderer.material;
-            centerDotMaterial.color = defaultLayerColor;
-        }
-    }
     public float lastClickTime;
     public float clickDelay;
     public int touchCount;
+
     // Update is called once per frame
     void Update()
     {
@@ -42,9 +28,9 @@ public class PlayerAuditoriumController : MonoBehaviour
         }
         if (Time.time <= lastClickTime + clickDelay)
         {
-            if (touchCount == 2 || (isVRMode && touchCount == 1))
+            if (touchCount == 2)
             {
-                Ray ray = !isVRMode ? cam.ScreenPointToRay(Input.mousePosition) : cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
                 if (Physics.Raycast(ray, out RaycastHit hit, 30f, deskLayer))
                 {
                     AuditoriumChair auditoriumChair = hit.collider.gameObject.GetComponentInParent<AuditoriumChair>();
@@ -52,18 +38,16 @@ public class PlayerAuditoriumController : MonoBehaviour
                     {
                         if (auditoriumChair.TryToSit())
                         {
+                            auditoriumChair.Sit();
                             if (currentChair != null)
                             {
                                 currentChair.ResetChair();
                             }
-                            if (!isVRMode)
-                            {
-                                characterController.enabled = false;
-                                isCharacterSit = true;
-                                standupButton.SetActive(true);
-                            }
+                            characterController.enabled = false;
+                            isCharacterSit = true;
+                            standupButton.SetActive(true);
                             transform.position = auditoriumChair.SetPlayerPosition();
-                            transform.position = new Vector3(transform.position.x, (isVRMode ? transform.position.y : transform.position.y + playerCameraUpOffset.y), transform.position.z);
+                            transform.position = new Vector3(transform.position.x, transform.position.y + playerCameraUpOffset.y, transform.position.z);
                             currentChair = auditoriumChair;
                             SetCameraPositionOnDesk(auditoriumChair.board.position);
                         }
@@ -77,7 +61,6 @@ public class PlayerAuditoriumController : MonoBehaviour
             touchCount = 0;
         }
 
-        RaycastClassroomDesk();
     }
     public void SetCameraPositionOnDesk(Vector3 _board)
     {
@@ -85,49 +68,19 @@ public class PlayerAuditoriumController : MonoBehaviour
         Quaternion lookAt = Quaternion.LookRotation(diff);
         canvasTransform.parent = cam.transform;
 
-        if (!isVRMode)
-        {
-            touchPanel.Xaxis = lookAt.eulerAngles.x / 360;
-         
-            touchPanel.Yaxis = lookAt.eulerAngles.y;
-        }
-        else
-        {
-            transform.rotation = Quaternion.Euler(0, lookAt.eulerAngles.y - cam.transform.localEulerAngles.y, 0);
-        }
+        touchPanel.Xaxis = lookAt.eulerAngles.x / 360;
+        touchPanel.Yaxis = lookAt.eulerAngles.y;
         canvasTransform.parent = this.transform;
-
     }
 
-    #region VR
-    private void RaycastClassroomDesk()
-    {
-        if (!isVRMode)
-        {
-            return;
-        }
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (Physics.Raycast(ray, out RaycastHit hit, 20f, deskLayer))
-        {
-            centerDotMaterial.color = hitLayerColor;
-        }
-        else
-        {
-            centerDotMaterial.color = defaultLayerColor;
-        }
-    }
-    #endregion
-
-    #region Normal
     public void StandUpFromChair()
     {
         if (currentChair != null)
         {
-            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + 1);
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + 0.5f, transform.localPosition.z + 1);
             currentChair.ResetChair();
             characterController.enabled = true;
             isCharacterSit = false;
         }
     }
-    #endregion
 }

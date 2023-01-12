@@ -100,16 +100,4 @@ public class PlayerVRClassroomController : MonoBehaviour
         gazeImg.fillAmount = 0;
         gvrTimer = 0;
     }
-    private void RaycastClassroomDesk()
-    {
-        Ray ray = cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        if (Physics.Raycast(ray, out RaycastHit hit, 20f, deskLayer))
-        {
-            centerDotMaterial.color = hitLayerColor;
-        }
-        else
-        {
-            centerDotMaterial.color = defaultLayerColor;
-        }
-    }
 }

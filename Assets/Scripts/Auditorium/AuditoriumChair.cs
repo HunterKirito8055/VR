@@ -34,10 +34,13 @@ public class AuditoriumChair : MonoBehaviour
     {
         if (!isDeskFilled)
         {
-            isDeskFilled = true;
             return true;
         }
         return false;
+    }
+    public void Sit()
+    {
+        isDeskFilled = true;
     }
     public Vector3 SetPlayerPosition()
     {

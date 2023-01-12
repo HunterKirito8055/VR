@@ -11,20 +11,25 @@ public class AuditoriumManager : MonoBehaviour
     public bool isHalfAuditoriumRowFill;
 
     public int noOfStudents;
-    public (int, int) halfAuditoriumRandomStrength;
-    public (int, int) fullAuditoriumRandomStrength;
+
+    public int[] auditoriumRoomData;
+    public ClassroomButtons[] auditoriumRoomButtons;
     private void Start()
+    {
+        for (int i = 0; i < auditoriumRoomData.Length; i++)
+        {
+            auditoriumRoomButtons[i].Initialize(this, auditoriumRoomData[i]);
+        }
+    }
+    public void SetClassroomStrength(int _classroomStrength)
     {
         AuditoriumChair[] _auditoriumChairsList = auditoriumChairsParent.GetComponentsInChildren<AuditoriumChair>();
         for (int i = 0; i < _auditoriumChairsList.Length; i++)
         {
             auditoriumChairsList.Add(_auditoriumChairsList[i]);
         }
-        halfAuditoriumRandomStrength = (auditoriumChairsList.Count / 2, (auditoriumChairsList.Count / 2) + 3);
-        fullAuditoriumRandomStrength = (auditoriumChairsList.Count - 3, auditoriumChairsList.Count - 5);
 
-        noOfStudents = isHalfAuditoriumRowFill ? Random.Range(halfAuditoriumRandomStrength.Item1, halfAuditoriumRandomStrength.Item2) :
-         Random.Range(fullAuditoriumRandomStrength.Item1, fullAuditoriumRandomStrength.Item2);
+        noOfStudents = Mathf.CeilToInt((float)auditoriumChairsList.Count * (_classroomStrength / 100f));
 
         ShuffleList(auditoriumChairsList);
 
@@ -47,10 +52,10 @@ public class AuditoriumManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (var classRoomDesk in auditoriumChairsList)
-        {
-            classRoomDesk.Initialize(board, null);
-        }
+        //foreach (var classRoomDesk in auditoriumChairsList)
+        //{
+        //    classRoomDesk.Initialize(board, null);
+        //}
     }
     private void ShuffleList(List<AuditoriumChair> auditoriumList)
     {

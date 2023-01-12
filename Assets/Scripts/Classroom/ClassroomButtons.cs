@@ -12,5 +12,10 @@ public class ClassroomButtons : MonoBehaviour
     {
         text.text = strength.ToString() + "%";
         button.onClick.AddListener(() => classroomManager.SetClassroomStrength(strength));
+    } 
+    public void Initialize(AuditoriumManager auditoriumManager, int strength)
+    {
+        text.text = strength.ToString() + "%";
+        button.onClick.AddListener(() => auditoriumManager.SetClassroomStrength(strength));
     }
 }
