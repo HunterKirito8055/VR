@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Auditorium Scene.unity
     guid: 974889adbefd6d940b4326e8daed49ec
+  - enabled: 1
+    path: Assets/Scenes/Meditation Scene.unity
+    guid: 36d56f79e847d494c94ea69393865d1e
   m_configObjects: {}
